@@ -4,7 +4,7 @@
 \alias{check_AD_grp}
 \title{Checks whether a given user is member of an AD specific group}
 \usage{
-check_AD_grp(ldserver, bind_dn, bind_pass, base, user, group)
+check_AD_grp(ldserver, bind_dn, bind_pass, base, user, group, verify = TRUE)
 }
 \arguments{
 \item{bind_dn}{Bind DN used for querying}
@@ -16,6 +16,8 @@ check_AD_grp(ldserver, bind_dn, bind_pass, base, user, group)
 \item{user}{User whose membership to look for}
 
 \item{group}{The AD group to check for}
+
+\item{verify}{a logical value to verify valid whether the certificate is valid (TLSInsecure). Default is TRUE}
 
 \item{server}{The AD server to query}
 }
@@ -30,5 +32,5 @@ check_AD_grp('ldap://myldapserver.com:389',
             'cn=bind_user,dc=example,dc=com',
             'bind_password',
             'cn=base,dc=example,dc=com',
-            'user','group')
+            'user','group', verify = FALSE)
 }

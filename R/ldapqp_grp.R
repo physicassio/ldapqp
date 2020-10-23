@@ -7,6 +7,7 @@
 #' @param base Base DN as entrypoint in the three
 #' @param user User whose membership to look for
 #' @param group The group to check for
+#' @param verify a logical value to verify valid whether the certificate is valid (TLSInsecure). Default is TRUE
 #' @return Boolean
 #' @export
 #' @examples
@@ -14,18 +15,18 @@
 #'             'cn=bind_user,dc=example,dc=com',
 #'             'bind_password',
 #'             'cn=base,dc=example,dc=com',
-#'             'user','group')
+#'             'user','group',verify = FALSE)
 
 library(stringr)
 library(RCurl)
 
-check_oldap_grp <- function(ldserver,bind_dn,bind_pass,base,user,group){
+check_oldap_grp <- function(ldserver,bind_dn,bind_pass,base,user,group,verify = TRUE){
   #checks if a user is member of the specified openldap group
   cred <- paste(bind_dn,bind_pass,sep = ':')
   uri <- paste(ldserver,'/uid=',user,',',base,sep ="")
 
   result <- str_split(getURL(uri, userpwd = cred,
-                             httpauth = 1L), pattern = "\n")
+                             httpauth = 1L, ssl.verifypeer = verify), pattern = "\n")
 
   auth <- any(str_detect(result,regex(paste('memberOf.*=',group,',',sep = ''))))
   return(auth)
@@ -41,6 +42,7 @@ check_oldap_grp <- function(ldserver,bind_dn,bind_pass,base,user,group){
 #' @param base Base DN as entrypoint in the three
 #' @param user User whose membership to look for
 #' @param group The AD group to check for
+#' @param verify a logical value to verify valid whether the certificate is valid (TLSInsecure). Default is TRUE
 #' @return Boolean
 #' @export
 #' @examples
@@ -48,15 +50,15 @@ check_oldap_grp <- function(ldserver,bind_dn,bind_pass,base,user,group){
 #'             'cn=bind_user,dc=example,dc=com',
 #'             'bind_password',
 #'             'cn=base,dc=example,dc=com',
-#'             'user','group')
+#'             'user','group', verify = FALSE)
 
-check_AD_grp <- function(ldserver,bind_dn,bind_pass,base,user,group){
+check_AD_grp <- function(ldserver,bind_dn,bind_pass,base,user,group,verify = TRUE){
   #checks if a user is member of the specified AD group
   cred <- paste(bind_dn,bind_pass,sep = ':')
   uri <- paste(ldserver,'/sAMAccountName=',user,',',base,sep ="")
 
   result <- str_split(getURL(uri, userpwd = cred,
-                             httpauth = 1L), pattern = "\n")
+                             httpauth = 1L, ssl.verifypeer = verify), pattern = "\n")
 
   auth <- any(str_detect(result,regex(paste('memberOf.*=',group,',',sep = ''))))
   return(auth)

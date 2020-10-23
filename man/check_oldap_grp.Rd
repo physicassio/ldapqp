@@ -15,6 +15,8 @@
 \item{user}{User whose membership to look for}
 
 \item{group}{The group to check for}
+
+\item{verify}{a logical value to verify valid whether the certificate is valid (TLSInsecure). Default is TRUE}
 }
 \value{
 Boolean
@@ -27,5 +29,5 @@ check_oldap_grp('ldap://myldapserver.com:389',
             'cn=bind_user,dc=example,dc=com',
             'bind_password',
             'cn=base,dc=example,dc=com',
-            'user','group')
+            'user','group',verify = FALSE)
 }
